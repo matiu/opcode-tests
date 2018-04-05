@@ -19,7 +19,7 @@ user	0m2.999s
 sys	0m2.908s
 
 
-$ ./stress-opcodes.sh
+=========================
 TEST CASE DESCRIPTON
   Script:1 1 XOR 1 XOR 1 XOR 1 XOR
   (nr opcodes):       9
@@ -39,7 +39,7 @@ real	0m7.762s
 user	0m2.976s
 sys	0m2.841s
 
-$ ./stress-opcodes.sh
+=========================
 TEST CASE DESCRIPTON
   Script:1
   (nr opcodes):       1
@@ -58,3 +58,49 @@ sys	0m8.088s
 real	0m7.876s
 user	0m3.007s
 sys	0m2.900s
+
+=========================
+
+TEST CASE DESCRIPTON
+  Script:0 BIN2NUM BIN2NUM BIN2NUM BIN2NUM BIN2NUM BIN2NUM BIN2NUM BIN2NUM BIN2NUM BIN2NUM BIN2NUM BIN2NUM BIN2NUM BIN2NUM BIN2NUM BIN2NUM BIN2NUM BIN2NUM 0 EQUAL
+  (nr opcodes):      21
+  NR OF TXs: 1000
+  NR OF OUTPUTS PER TXs: 100
+ == Mining
+ == Getting UTXOs
+ == Creating TXs
+ == Sending TXs
+
+real	0m19.009s
+user	0m8.796s
+sys	0m8.151s
+ == Creating Spend TXs
+ ## Sending Spend TXs, USING <SCRIPT> ## TX length:3051 b
+
+real	0m9.388s
+user	0m4.083s
+sys	0m3.022s
+
+=======================
+$ ./stress-opcodes.sh
+TEST CASE DESCRIPTON
+  Script:1 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR
+  (nr opcodes):      65
+  NR OF TXs: 500
+  NR OF OUTPUTS PER TXs: 100
+ == Mining
+ == Getting UTXOs
+
+ == Creating TXs
+ == Sending TXs
+
+real	0m9.021s
+user	0m3.981s
+sys	0m4.007s
+ == Creating Spend TXs
+ ## Sending Spend TXs, USING <SCRIPT> ## TX length:7451 b
+
+real	0m5.653s
+user	0m2.828s
+sys	0m1.545s
+

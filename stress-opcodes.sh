@@ -7,7 +7,7 @@ SCRIPT='1 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XOR 1 XO
 #SCRIPT='
 #SCRIPT='1'
 FEE=0.0001
-COUNT=500
+COUNT=100
 OUTPUTSPERTX=100
 
 ECHO="echo "
@@ -32,7 +32,6 @@ function getUnspent () {
         UTXO=`echo $ALL_UTXOS| jq ".[-$INDEX]"`
         OUTPOINT=`echo $UTXO | jq .txid | sed -e 's/^"//' -e 's/"$//'`:0
         VALUE=`echo $UTXO | jq .amount | sed -e 's/^"//' -e 's/"$//'`
-        VALUE=`echo $VALUE - $FEE | bc`
 
         UNSPENT="$UNSPENT $OUTPOINT|$VALUE"
 
@@ -46,7 +45,17 @@ function createTxs () {
         O=`echo $UTXO| cut -d "|" -f 1`;
         V=`echo $UTXO| cut -d "|" -f 2`;
 
-        TX1=`$CLITX -create in=$O outscript=$V:"$SCRIPT"`
+        VALUE=`echo "($V - $FEE)/$OUTPUTSPERTX" | bc -l`
+        VALUE=`printf %.8f $VALUE`
+
+        COUNTER=0
+        TXCMD="$CLITX -create in=$O"
+        while [  $COUNTER -lt $OUTPUTSPERTX ]; do
+          TXCMD="$TXCMD outscript=$VALUE:\"$SCRIPT\""
+          let COUNTER=COUNTER+1 
+        done
+
+        TX1=`eval $TXCMD`
         TX=`$CLI signrawtransaction $TX1| jq .hex  | sed -e 's/^"//' -e 's/"$//'`
 
         TXS="$TXS $TX|$V"
@@ -70,21 +79,20 @@ function createSpendTxs () {
     for TXIDVALUE in $TXIDS ; do
         TXID=`echo $TXIDVALUE| cut -d "|" -f 1`;
         V=`echo $TXIDVALUE| cut -d "|" -f 2`;
-
-        VALUE=`echo "($V - $FEE)/$OUTPUTSPERTX" | bc -l`
-        VALUE=`printf %.8f $VALUE`
+        VALUE=`echo $VALUE - $FEE | bc`
 
         COUNTER=0
-        TXCMD="$CLITX -create in=$TXID:0 "
+        TXCMD="$CLITX -create"
         while [  $COUNTER -lt $OUTPUTSPERTX ]; do
-          TXCMD="$TXCMD outscript=$VALUE:\"$SCRIPT\""
+            TXCMD="$TXCMD  in=$TXID:$COUNTER"
           let COUNTER=COUNTER+1 
         done
-        TX=`eval $TXCMD`
 
-        D=`echo $TX |wc -c`
-        LENGTH=`echo $D/2 | bc`
-        STXS="$STXS $TX"
+        TXCMD="$TXCMD outscript=$VALUE:\"$SCRIPT\""
+        TX1=`eval $TXCMD`
+ 
+
+       STXS="$STXS $TX"
     done
 }
 

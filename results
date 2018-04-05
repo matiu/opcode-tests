@@ -1,0 +1,60 @@
+
+TEST CASE DESCRIPTON
+  Script:0 BIN2NUM BIN2NUM BIN2NUM BIN2NUM BIN2NUM BIN2NUM BIN2NUM BIN2NUM BIN2NUM BIN2NUM BIN2NUM BIN2NUM BIN2NUM BIN2NUM BIN2NUM BIN2NUM BIN2NUM BIN2NUM 0 EQUAL
+  (nr opcodes):      21
+  NR OF TXs: 1000
+ == Mining
+ == Getting UTXOs
+ == Creating TXs
+ == Sending TXs
+
+real	0m18.813s
+user	0m8.758s
+sys	0m7.965s
+ == Creating Spend TXs
+ ## Sending Spend TXs, USING <SCRIPT> ##
+
+real	0m7.849s
+user	0m2.999s
+sys	0m2.908s
+
+
+$ ./stress-opcodes.sh
+TEST CASE DESCRIPTON
+  Script:1 1 XOR 1 XOR 1 XOR 1 XOR
+  (nr opcodes):       9
+  NR OF TXs: 1000
+ == Mining
+ == Getting UTXOs
+ == Creating TXs
+ == Sending TXs
+
+real	0m18.869s
+user	0m8.805s
+sys	0m7.907s
+ == Creating Spend TXs
+ ## Sending Spend TXs, USING <SCRIPT> ##
+
+real	0m7.762s
+user	0m2.976s
+sys	0m2.841s
+
+$ ./stress-opcodes.sh
+TEST CASE DESCRIPTON
+  Script:1
+  (nr opcodes):       1
+  NR OF TXs: 1000
+ == Mining
+ == Getting UTXOs
+ == Creating TXs
+ == Sending TXs
+
+real	0m18.946s
+user	0m8.784s
+sys	0m8.088s
+ == Creating Spend TXs
+ ## Sending Spend TXs, USING <SCRIPT> ##
+
+real	0m7.876s
+user	0m3.007s
+sys	0m2.900s

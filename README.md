@@ -1,5 +1,5 @@
 
-bitcoin-abc stress test
+bitcoin-abc new opcodes stress test
 
 Run bitcoind with:
 `~/dev/bitcoin-abc/build/src/bitcoind -regtest  -monolithactivationtime=0`
@@ -7,7 +7,11 @@ Run bitcoind with:
 then:
 ./stress-opcodes.sh
 
-change "SCRIPT" to evaluate other OP_CODES
+ * change "SCRIPT" to evaluate other OP_CODES
+ * tx creation in based on https://gist.github.com/matiu/f7b4afb3781c9f7c735435f19602db31
+ * if you dont have available uxtos, run the script one and interrupt it after "mining" to get matured utxos for the next run
+
+
 
 example output:
 ```

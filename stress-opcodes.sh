@@ -24,41 +24,6 @@ $CLI generate $COUNT >/dev/null || exit
 
 source ./util.sh
 
-function createTxs () {
-    $ECHO " == Creating TXs"
-    for UTXO in $UNSPENT; do
-        O=`echo $UTXO| cut -d "|" -f 1`;
-        V=`echo $UTXO| cut -d "|" -f 2`;
-
-        VALUE=`echo "($V - $FEE)/$OUTPUTSPERTX" | bc -l`
-        VALUE=`printf %.8f $VALUE`
-
-        COUNTER=0
-        TXCMD="$CLITX -create in=$O"
-        while [  $COUNTER -lt $OUTPUTSPERTX ]; do
-          TXCMD="$TXCMD outscript=$VALUE:\"$SCRIPT\""
-          let COUNTER=COUNTER+1 
-        done
-
-        TX1=`eval $TXCMD`
-        TX=`$CLI signrawtransaction $TX1| jq .hex  | sed -e 's/^"//' -e 's/"$//'`
-
-        TXS="$TXS $TX|$V"
-    done
-}
-
-function sendTxs () {
-    $ECHO " == Sending TXs"
-    for TXVALUE in $TXS; do
-        TX=`echo $TXVALUE| cut -d "|" -f 1`;
-        V=`echo $TXVALUE| cut -d "|" -f 2`;
-
-        TXID=`$CLI sendrawtransaction $TX`
-        TXIDS="$TXIDS $TXID|$V"
-    done
-}
-
-
 function createSpendTxs () {
     $ECHO " == Creating Spend TXs"
     for TXIDVALUE in $TXIDS ; do

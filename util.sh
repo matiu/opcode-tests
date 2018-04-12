@@ -1,9 +1,9 @@
 
 function getUnspent () {
     $ECHO " == Getting UTXOs"
-    ALL_UTXOS=`$CLI  listunspent | jq ".|=sort_by(.amount)|reverse|.[0:$COUNT]"`
+    ALL_UTXOS=`$CLI listunspent 0 | jq ".|=sort_by(.amount)|reverse|.[0:$COUNT]"`
 
-    if [ $ALL_UTXOS == '[]' ] ; then
+    if [ "$ALL_UTXOS" == '[]' ] ; then
         echo "!! NO UTXOs"
         exit 1
     fi
@@ -23,6 +23,12 @@ function getUnspent () {
 
 function createTxs () {
     $ECHO " == Creating TXs"
+
+    if [ "$UNSPENT" == '' ] ; then
+        echo "!! NO UNSPENT"
+        exit 1
+    fi
+
     for UTXO in $UNSPENT; do
         O=`echo $UTXO| cut -d "|" -f 1`;
         V=`echo $UTXO| cut -d "|" -f 2`;
@@ -39,15 +45,22 @@ function createTxs () {
 
         TX1=`eval $TXCMD`
         if [ -z "$TX1" ] ; then
-            echo "!! Could not create tx"
+            echo "!! Could not create tx with $TXCMD"
             exit 1
         fi
 
 
         TX=`$CLI signrawtransaction $TX1| jq .hex  | sed -e 's/^"//' -e 's/"$//'`
 
-        TXS="$TXS $TX|$V"
+        TXS="$TXS $TX|$VALUE"
     done
+
+
+    if [ "TXS" == '' ] ; then
+        echo "!! NO TXS created"
+        exit 1
+    fi
+
 }
 
 function sendTxs () {
@@ -57,9 +70,31 @@ function sendTxs () {
         V=`echo $TXVALUE| cut -d "|" -f 2`;
 
         TXID=`$CLI sendrawtransaction $TX`
+
+        if [ -z "$TXID" ] ; then
+            echo "!! FAILED TO SEND $TX"
+            exit 1
+        fi
+
+
         TXIDS="$TXIDS $TXID|$V"
     done
+    echo "SEND:$TXIDS"
 }
 
+
+function sendSpendTxs () {
+    $ECHO " ## Sending Spend TXs, USING <SCRIPT> ## TX"
+
+
+    for TX in $STXS; do
+        TXID=`$CLI sendrawtransaction $TX`
+        if [ -z "$TXID" ] ; then
+            echo "!! FAILED TO SEND $TX"
+            exit 1
+        fi
+        echo "SENT SEND:$TXID"
+    done
+}
 
 

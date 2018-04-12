@@ -46,13 +46,6 @@ function createSpendTxs () {
     done
 }
 
-function sendSpendTxs () {
-    $ECHO " ## Sending Spend TXs, USING <SCRIPT> ## TX"
-    for TX in $STXS; do
-        TXID=`$CLI sendrawtransaction $TX`
-    done
-}
-
 getUnspent
 createTxs
 time sendTxs

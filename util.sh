@@ -12,7 +12,7 @@ function getUnspent () {
     while [  $COUNTER -lt $COUNT ]; do
         INDEX=$((1+COUNTER))
         UTXO=`echo $ALL_UTXOS| jq ".[-$INDEX]"`
-        OUTPOINT=`echo $UTXO | jq .txid | sed -e 's/^"//' -e 's/"$//'`:0
+        OUTPOINT=`echo $UTXO | jq .txid | sed -e 's/^"//' -e 's/"$//'`:`echo $UTXO | jq .vout`
         VALUE=`echo $UTXO | jq .amount | sed -e 's/^"//' -e 's/"$//'`
 
         UNSPENT="$UNSPENT $OUTPOINT|$VALUE"

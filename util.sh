@@ -3,6 +3,12 @@ function getUnspent () {
     $ECHO " == Getting UTXOs"
     ALL_UTXOS=`$CLI listunspent 0 | jq ".|=sort_by(.amount)|reverse|.[0:$COUNT]"`
 
+
+    if [ "$ALL_UTXOS" == '' ] ; then
+        echo "!! NO UTXOs"
+        exit 1
+    fi
+
     if [ "$ALL_UTXOS" == '[]' ] ; then
         echo "!! NO UTXOs"
         exit 1

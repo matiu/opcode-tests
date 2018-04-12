@@ -45,7 +45,7 @@ function createTxs () {
         COUNTER=0
         TXCMD="$CLITX -create in=$O"
         while [  $COUNTER -lt $OUTPUTSPERTX ]; do
-          TXCMD="$TXCMD outscript=$VALUE:\"$SCRIPT\""
+          TXCMD="$TXCMD outscript=$VALUE:\"$SCRIPT\""$SH
           let COUNTER=COUNTER+1 
         done
 
@@ -70,7 +70,7 @@ function createTxs () {
 }
 
 function sendTxs () {
-    $ECHO " == Sending TXs"
+    $ECHO " == Sending TXs $TXS"
     for TXVALUE in $TXS; do
         TX=`echo $TXVALUE| cut -d "|" -f 1`;
         V=`echo $TXVALUE| cut -d "|" -f 2`;
@@ -85,12 +85,12 @@ function sendTxs () {
 
         TXIDS="$TXIDS $TXID|$V"
     done
-    echo "SEND:$TXIDS"
+    echo "SENT TXID:$TXIDS"
 }
 
 
 function sendSpendTxs () {
-    $ECHO " ## Sending Spend TXs, USING <SCRIPT> ## TX"
+    $ECHO " ## Sending Spend TXs $STXS"
 
 
     for TX in $STXS; do
@@ -99,7 +99,7 @@ function sendSpendTxs () {
             echo "!! FAILED TO SEND $TX"
             exit 1
         fi
-        echo "SENT SEND:$TXID"
+        echo "SENT SPEND TXID:$TXID"
     done
 }
 
